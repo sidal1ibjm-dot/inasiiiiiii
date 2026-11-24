@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لإينس 💗</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: #ffffff;
+      color: #5a3e47;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* زينة خلفية ناعمة جداً */
+    .decor {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .decor span {
+      position: absolute;
+      opacity: 0.18;
+      font-size: 22px;
+      animation: float 9s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 18px;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+    .page.active { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #fbd3df;
+      border-radius: 22px;
+      box-shadow: 0 10px 30px rgba(255, 105, 150, 0.12);
+      padding: 26px 22px;
+      max-width: 560px;
+      width: 100%;
+      line-height: 1.9;
+      font-size: 1.05rem;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      color: #e75480;
+      margin-bottom: 10px;
+      direction: ltr;
+    }
+    h2 {
+      font-size: 2rem;
+      color: #e75480;
+      direction: ltr;
+    }
+
+    .media {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 22px rgba(255, 105, 150, 0.18);
+      background: #fff;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 12px 34px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8fb1, #ff5c8a);
+      color: #fff;
+      font-size: 1.05rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(255, 92, 138, 0.3);
+      transition: transform 0.2s ease;
+    }
+    .btn:hover { transform: scale(1.05); }
+    .btn-blue {
+      background: linear-gradient(135deg, #5aa7ff, #2f7de1);
+      box-shadow: 0 6px 16px rgba(47, 125, 225, 0.3);
+    }
+
+    /* الظرف */
+    .envelope-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      height: 340px;
+      margin: 0 auto 10px;
+      perspective: 900px;
+    }
+    .envelope {
+      position: absolute;
+      inset: 0;
+      background: #fff5f8;
+      border: 2px solid #f7b6c9;
+      border-radius: 14px;
+      box-shadow: 0 10px 26px rgba(255, 105, 150, 0.2);
+      overflow: hidden;
+    }
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #ffd6e3;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform 0.9s ease;
+      z-index: 3;
+    }
+    .envelope.open .flap { transform: rotateX(180deg); z-index: 1; }
+    .heart-seal {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 34px;
+      z-index: 4;
+      transition: opacity 0.4s ease;
+    }
+    .envelope.open .heart-seal { opacity: 0; }
+    .letter {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 10px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 14px;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      transform: translateY(0);
+      opacity: 0;
+      transition: transform 1.1s ease, opacity 1.1s ease;
+      z-index: 2;
+      overflow-y: auto;
+      max-height: 320px;
+    }
+    .envelope.open .letter {
+      transform: translateY(-30px);
+      opacity: 1;
+    }
+
+    /* زر إعادة */
+    .restart { margin-top: 18px; }
+
+    .timer-note {
+      font-size: 0.85rem;
+      color: #b78a98;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.7rem; }
+      h2 { font-size: 1.6rem; }
+      .card { font-size: 0.98rem; padding: 20px 16px; }
+      .envelope-wrap { height: 380px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="decor" id="decor"></div>
+
+  <!-- الصفحة 1: الترحيب -->
+  <section class="page active" id="page1">
+    <div class="card">
+      <h1>Hi inasiiiiiiiii</h1>
+      <h2>مرتيييييييييييييي</h2>
+      <button class="btn" onclick="goNext(1)">متابعة</button>
+      <p class="timer-note">ينتقل تلقائياً بعد 10 ثوانٍ</p>
+    </div>
+  </section>
+
+  <!-- الصفحة 2: الظرف والرسالة -->
+  <section class="page" id="page2">
+    <div class="envelope-wrap" id="envWrap">
+      <div class="envelope" id="envelope">
+        <div class="letter">
+          Hi مرتي 🙂<br><br>
+          بمناسبة منيش عارف وش هيا حبيت نقولك بلي نحبك يا اعز انسان عندي وبغيت نقولك ليوم 25 نوفبمر ذكرا حبنا هذ ليوم كان اول يوم تخرج كملة i love u من واحد فينا لثاني 🫂💗 علابالي مكيش متفكرك بصح ارواحي نفكرك
+        </div>
+        <div class="flap"></div>
+        <div class="heart-seal">💗</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px;">
+      <button class="btn" onclick="goNext(2)">متابعة</button>
+      <p class="timer-note">ينتقل تلقائياً بعد 10 ثوانٍ</p>
+    </div>
+  </section>
+
+  <!-- الصفحة 3: الصورة الأولى -->
+  <section class="page" id="page3">
+    <div class="card">
+      <!-- ملف الصورة الأولى: 1.jpg -->
+      <img class="media" src="1.jpg" alt="الصورة الأولى">
+      <p>
+        اول واحد عتارف بحبو كان نتي في هذ ريلز نتي تكوني نسيتيه بصح انا منسيتوش باسكو كان هوا بداية حكايتني حص نتي اول واحد من عتارف بلحب باسكو كنا غير نتشارو بليريلز بلي نحبو بعضنا بصح انا اول واحد حب لوخر وهذي مافيهاش نقاش 😂🔪💓
+      </p>
+      <button class="btn" onclick="goNext(3)">متابعة</button>
+      <p class="timer-note">ينتقل تلقائياً بعد 10 ثوانٍ</p>
+    </div>
+  </section>
+
+  <!-- الصفحة 4: الفيديو الأول -->
+  <section class="page" id="page4">
+    <div class="card">
+      <!-- ملف الفيديو الأول: v1.mp4 -->
+      <video class="media" id="video1" src="v1.mp4" controls playsinline></video>
+      <p>
+        هذي كانت اول مرة تقولي بلي تحبيني في فوكال بصح للدرك محتفض بيها ونسمعها شبه كل يوم كنتي حابة تقوليهالي داخل لعبة كي كنت نلعبو blood strike بصح مصدقتش 😂
+      </p>
+      <button class="btn" onclick="goNext(4)">متابعة</button>
+      <p class="timer-note">ينتقل تلقائياً بعد 10 ثوانٍ</p>
+    </div>
+  </section>
+
+  <!-- الصفحة 5: الفيديو الثاني -->
+  <section class="page" id="page5">
+    <div class="card">
+      <!-- ملف الفيديو الثاني: v2.mp4 -->
+      <video class="media" id="video2" src="v2.mp4" controls playsinline></video>
+      <p>
+        هذي اول فيديو وتطقيمة خدمنها مع بعض انا خدمتو كان شباب ورحتي نحيتي تطقيمة 😂🔪 بلاما حتا تقوليلي فاكيو ليك نحبك 🙂💓
+      </p>
+      <button class="btn" onclick="goNext(5)">متابعة</button>
+      <p class="timer-note">ينتقل تلقائياً بعد 10 ثوانٍ</p>
+    </div>
+  </section>
+
+  <!-- الصفحة 6: الصورة الثانية -->
+  <section class="page" id="page6">
+    <div class="card" style="background: #ffe4ee;">
+      <!-- ملف الصورة الثانية: 2.jpg -->
+      <img class="media" src="2.jpg" alt="الصورة الثانية">
+      <p>
+        هذي اول مرة تعطيني بوسة كانت في 6/11/2026 ملقري كانت غير كتابية بيح كلما نتفكرها قلبي يضرب 😂💓
+      </p>
+      <button class="btn" onclick="goNext(6)">متابعة</button>
+      <p class="timer-note">ينتقل تلقائياً بعد 10 ثوانٍ</p>
+    </div>
+  </section>
+
+  <!-- الصفحة 7: الصفحة الأخيرة -->
+  <section class="page" id="page7">
+    <div class="card">
+      <p>
+        عنذي معاك ذكريات بزاف ميكملوش كون نبدا نحكي فيهم ميتلخصوش وميكملوش باسكو نحبك ونهتم لاصغر تفاصيل ونتفكر ابسط الامور تاوعك باسكو نعشقك 💓 هذي غير ملخص صغير قلت بااك نفرحك فيه في هذي مناسبة وحبيت نقولك :
+        <br><br>
+        انت اغلى انسان عندي واكثر بنادم احبه 💓🫂 نتمنا يكون عندك نفي المشاعر لي عندي واكثر باسكو اموت فيك ومنقذرش نعيش بلا بيك نحبك بزاف ومهما هدرتلك وقلتلك مراحش نعطيك حقك باسكو حبي ليك متقدرش تكتبو كلمات تسما نلخصها ونقولك اعشقك يا مرتي لعزيزةلي تهبل نحبك 💓🫠
+      </p>
+      <button class="btn" onclick="restart()">إعادة من البداية 💗</button>
+    </div>
+  </section>
+
+  <script>
+    const TOTAL_PAGES = 7;
+    const AUTO_MS = 10000;
+    let autoTimer = null;
+
+    // زينة خلفية بسيطة
+    const decor = document.getElementById('decor');
+    const symbols = ['🌸', '💗', '🌷', '💕', '🌹', '💖'];
+    for (let i = 0; i < 18; i++) {
+      const s = document.createElement('span');
+      s.textContent = symbols[i % symbols.length];
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.animationDelay = (Math.random() * 6) + 's';
+      s.style.fontSize = (16 + Math.random() * 12) + 'px';
+      decor.appendChild(s);
+    }
+
+    function stopAllMedia() {
+      document.querySelectorAll('video, audio').forEach(m => {
+        m.pause();
+        m.currentTime = 0;
+      });
+    }
+
+    function clearAuto() {
+      if (autoTimer) {
+        clearTimeout(autoTimer);
+        autoTimer = null;
+      }
+    }
+
+    function showPage(n) {
+      clearAuto();
+      stopAllMedia();
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const page = document.getElementById('page' + n);
+      page.classList.add('active');
+      window.scrollTo(0, 0);
+
+      if (n === 2) {
+        const env = document.getElementById('envelope');
+        env.classList.remove('open');
+        setTimeout(() => env.classList.add('open'), 600);
+      }
+
+      // الانتقال التلقائي بعد 10 ثوانٍ
+      if (n < TOTAL_PAGES) {
+        autoTimer = setTimeout(() => goNext(n), AUTO_MS);
+      }
+    }
+
+    function goNext(current) {
+      if (current !== undefined) {
+        const cur = document.querySelector('.page.active');
+        const curId = cur ? parseInt(cur.id.replace('page', '')) : current;
+        if (curId !== current) return;
+      }
+      const next = (current || 1) + 1;
+      if (next <= TOTAL_PAGES) showPage(next);
+    }
+
+    function restart() {
+      showPage(1);
+    }
+
+    // بدء الموقع
+    showPage(1);
+  </script>
+
+</body>
+</html>
