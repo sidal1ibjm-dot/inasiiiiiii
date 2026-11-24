@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For Inasi 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+body {
+font-family: 'Cairo', sans-serif;
+background: linear-gradient(135deg, #ffe6f0 0%, #fff5f8 50%, #f3e5f5 100%);
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 16px;
+color: #3a2330;
+}
+.card {
+background: rgba(255, 255, 255, 0.92);
+backdrop-filter: blur(10px);
+border-radius: 24px;
+box-shadow: 0 12px 35px rgba(216, 27, 96, 0.12);
+width: 100%;
+max-width: 440px;
+padding: 28px 22px;
+text-align: center;
+display: none;
+animation: fadeIn 0.45s ease;
+}
+.card.active {
+display: block;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(12px); }
+to { opacity: 1; transform: translateY(0); }
+}
+h1 {
+font-size: 1.6rem;
+color: #d81b60;
+margin-bottom: 10px;
+}
+h2 {
+font-size: 1.25rem;
+color: #ad1457;
+margin-bottom: 14px;
+}
+p {
+font-size: 1rem;
+line-height: 1.75;
+margin-bottom: 18px;
+word-wrap: break-word;
+}
+.timer {
+font-size: 0.85rem;
+color: #888;
+margin-bottom: 16px;
+}
+.media-box {
+width: 100%;
+border-radius: 16px;
+overflow: hidden;
+margin: 14px 0 20px;
+background: #fce4ec;
+box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.media-box img, .media-box video {
+width: 100%;
+display: block;
+max-height: 360px;
+object-fit: cover;
+}
+.btn {
+background: linear-gradient(135deg, #ec407a, #d81b60);
+color: #fff;
+border: none;
+padding: 12px 28px;
+border-radius: 50px;
+font-family: 'Cairo', sans-serif;
+font-size: 1rem;
+font-weight: 600;
+cursor: pointer;
+box-shadow: 0 6px 18px rgba(216, 27, 96, 0.3);
+transition: transform 0.2s ease;
+}
+.btn:active {
+transform: scale(0.96);
+}
+</style>
+</head>
+<body>
+
+<!-- الصفحة 1 -->
+<div class="card active" id="page1">
+<h1>Hi inasiiiiiiiii 💕</h1>
+<p>مرتيييييييييي 💗</p>
+<div class="timer" id="countdown">...أو الانتقال تلقائياً خلال 10 ثواني</div>
+<button class="btn" onclick="nextPage(2)">متابعة 💗</button>
+</div>
+
+<!-- الصفحة 2 -->
+<div class="card" id="page2">
+<h2>مرتي 💗 25 نوفمبر Hi</h2>
+<p>
+بمناسبة منيش عارف وش هيا حبيت نقولك بلي نحبك يا اعز انسان عندي وبغيت نقولك ليوم 25 نوفمبر ذكرا حينا هذ ليوم كان اول يوم تخرج كملة i love u من واحد فينا لثاني 💻✨
+علابالي مكيش متفكرتك بصح ارواحي نفكرك 💗
+</p>
+<button class="btn" onclick="nextPage(3)">متابعة 💗</button>
+</div>
+
+<!-- الصفحة 3 -->
+<div class="card" id="page3">
+<h2>I Love You Reel 💗</h2>
+<div class="media-box">
+<!-- تأكد أن اسم الصورة يطابق الاسم الموجود في المستودع -->
+<img src="GEM_PHOTO_3F6CE9CD-7632-44E1-8609-00232C28102A_L0_001_2026-11-24_22-14-35.jpg" alt="Memory" />
+</div>
+<p>
+هذي كانت اول مرة تقولي بلي تحبيني في فوكال بصح للدرك محتفض بيها ونسمعها شبه كل يوم كنتي حابة تقوليهالي داخل لعبة كي كنت نلعبو blood strike بصح مصدقتنش 😅
+</p>
+<div class="media-box">
+<video id="vid1" src="video_1.mp4" controls playsinline></video>
+</div>
+<button class="btn" onclick="nextPage(4)">متابعة 💗</button>
+</div>
+
+<!-- الصفحة 4 -->
+<div class="card" id="page4">
+<div class="media-box">
+<video id="vid2" src="video_2.mp4" controls playsinline></video>
+</div>
+<p>
+هذي اول فيديو وتطقيمة خدمتها مع بعض انا خدمتو كان شباب ورحتي نحيتي تطقيمة 🔪😅 بلا ما حتا تقوليلي فاكيو 🤭 ليك نحبك 💕
+</p>
+<button class="btn" onclick="nextPage(1)">إعادة من البداية 💗</button>
+</div>
+
+<script>
+let autoTimer = setTimeout(() => nextPage(2), 10000);
+
+    function nextPage(pageNum) {
+      clearTimeout(autoTimer);
+      // إيقاف أي فيديو يعمل عند الانتقال
+      document.querySelectorAll('video').forEach(v => v.pause());
+      
+      document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+      const target = document.getElementById('page' + pageNum);
+      if (target) {
+        target.classList.add('active');
+      }
+    }
+  </script>
+
+</body>
+</html>
