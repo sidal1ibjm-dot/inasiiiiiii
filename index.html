@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inasiiii</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: Tahoma, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+    transition: background-color 0.5s;
+  }
+  body.grey { background: #5e5e5e; color: #fff; }
+  body.brown { background: #3e2716; color: #f4e9dc; }
+  body.red { background: #6e0a14; color: #fff; }
+
+  /* Decorative abandoned-school background layers */
+  #bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #flashlight {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background: radial-gradient(circle 180px at var(--mx, 50%) var(--my, 50%), rgba(255,240,200,0.12), rgba(0,0,0,0.85) 70%);
+    transition: background 0.1s;
+  }
+  #vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+  }
+  #flicker {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2;
+    background: rgba(0,0,0,0.05);
+    animation: flicker 4s infinite;
+  }
+  @keyframes flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 0.05; }
+    20%, 24%, 55% { opacity: 0.45; }
+  }
+  #scan {
+    position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: 0.25;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 1px, transparent 2px, transparent 4px);
+  }
+
+  .screen {
+    display: none; width: 100%; max-width: 520px; padding: 24px;
+    text-align: center; position: relative; z-index: 3;
+  }
+  .screen.active { display: block; animation: fade 0.4s; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  h1, h2 { font-size: 1.5rem; margin-bottom: 18px; line-height: 1.6; text-shadow: 0 2px 8px rgba(0,0,0,0.7); }
+  img.pic {
+    max-width: 100%; max-height: 60vh; border-radius: 12px; margin-bottom: 18px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.7); border: 2px solid rgba(255,255,255,0.15);
+  }
+
+  input[type=text] {
+    width: 100%; padding: 12px; font-size: 1.1rem; border: 2px solid #1a0f08;
+    border-radius: 8px; margin-bottom: 14px; text-align: center;
+    background: #efe3d0; color: #2a1708;
+  }
+  button {
+    background: #e9dcc6; color: #3e2716; border: 2px solid #1a0f08; border-radius: 6px;
+    padding: 12px 26px; font-size: 1.05rem; cursor: pointer; margin: 6px;
+    transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 0 #1a0f08;
+  }
+  button:hover { transform: translateY(-2px); box-shadow: 0 0 14px rgba(255,220,150,0.6), 0 4px 0 #1a0f08; }
+  button:active { transform: translateY(2px); box-shadow: 0 1px 0 #1a0f08; }
+  button.wrong { background: #c0172b; color: #fff; }
+  button.right { background: #3d8f4f; color: #fff; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .options button { width: 80%; }
+
+  /* Celebration confetti */
+  #celebrate { position: fixed; inset: 0; pointer-events: none; display: none; overflow: hidden; z-index: 4; }
+  .piece { position: absolute; top: -20px; width: 10px; height: 14px; animation: fall linear infinite; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+</style>
+</head>
+<body class="grey">
+
+<canvas id="bg-canvas"></canvas>
+<div id="flashlight"></div>
+<div id="vignette"></div>
+<div id="flicker"></div>
+<div id="scan"></div>
+<div id="celebrate"></div>
+
+<!-- Welcome -->
+<section class="screen active" id="welcome">
+  <h1>Hello inasiiiiii راكي واجدة ؟</h1>
+  <button onclick="go('q1')">متابعة</button>
+</section>
+
+<!-- Page 1 -->
+<section class="screen" id="q1">
+  <img class="pic" src="png.1.png" alt="">
+  <h2>وش اسم زوجك مستقبلي ؟</h2>
+  <input type="text" id="q1input" placeholder="اكتب الإجابة" onkeydown="if(event.key==='Enter')checkQ1()">
+  <button onclick="checkQ1()">تأكيد</button>
+</section>
+
+<section class="screen" id="q1ok">
+  <img class="pic" src="png.2.png" alt="">
+  <button onclick="go('q2')">متابعة</button>
+</section>
+
+<section class="screen" id="q1bad">
+  <img class="pic" src="png.3.png" alt="">
+  <br><button onclick="go('q1mc')">إعادة محاولة</button>
+</section>
+
+<!-- Page 1 multiple choice (after retry) -->
+<section class="screen" id="q1mc">
+  <img class="pic" src="png.1.png" alt="">
+  <h2>وش اسم زوجك مستقبلي ؟</h2>
+  <div class="options">
+    <button onclick="pickMC(this, true)">سيدعلي</button>
+    <button onclick="pickMC(this, true)">sidali</button>
+    <button onclick="pickMC(this, false)">ايزان</button>
+    <button onclick="pickMC(this, false)">لي تعيطيلو بنانا صفور</button>
+  </div>
+</section>
+
+<!-- Page 2 -->
+<section class="screen" id="q2">
+  <img class="pic" src="png.4.png" alt="">
+  <h2>Do you love me ? ( sidali )</h2>
+  <div class="options">
+    <button onclick="answerQ2(true, this)">yes</button>
+    <button onclick="answerQ2(false, this)">no</button>
+  </div>
+</section>
+
+<section class="screen" id="q2yes">
+  <img class="pic" src="png.5.png" alt="">
+  <button onclick="go('q3')">متابعة</button>
+</section>
+
+<section class="screen" id="q2no">
+  <img class="pic" src="png.6.png" alt="">
+  <br><button onclick="go('q2retry')">إعادة محاولة</button>
+</section>
+
+<section class="screen" id="q2retry">
+  <img class="pic" src="png.20.png" alt="">
+  <h2>Do you love me ?</h2>
+  <div class="options">
+    <button onclick="playSound('voc3', 3); go('q3')">yes</button>
+  </div>
+</section>
+
+<!-- Page 3 -->
+<section class="screen" id="q3">
+  <img class="pic" src="png.7.png" alt="">
+  <h2>وش اكثر حاجة يحبها sidali ?</h2>
+  <input type="text" id="q3input" placeholder="اكتب الإجابة" onkeydown="if(event.key==='Enter')checkQ3()">
+  <button onclick="checkQ3()">تأكيد</button>
+</section>
+
+<section class="screen" id="q3ok">
+  <img class="pic" src="png.8.png" alt="">
+  <button onclick="go('q4')">متابعة</button>
+</section>
+
+<section class="screen" id="q3bad">
+  <img class="pic" src="png.9.png" alt="">
+  <br><button onclick="go('q3retry')">إعادة محاولة</button>
+</section>
+
+<section class="screen" id="q3retry">
+  <img class="pic" src="png.7.png" alt="">
+  <h2>وش اكثر حاجة يحبها sidali ?</h2>
+  <div class="options">
+    <button onclick="playSound('voc3', 3); go('q4')">اناسيييييي</button>
+  </div>
+</section>
+
+<!-- Page 4 -->
+<section class="screen" id="q4">
+  <img class="pic" src="png.10.png" alt="">
+  <h2>وش اكثر حاجة تحبها اناسيييي ؟</h2>
+  <input type="text" id="q4input" placeholder="اكتب الإجابة" onkeydown="if(event.key==='Enter')checkQ4()">
+  <button onclick="checkQ4()">تأكيد</button>
+</section>
+
+<section class="screen" id="q4ok">
+  <img class="pic" src="png.11.png" alt="">
+  <button onclick="go('q5')">متابعة</button>
+</section>
+
+<section class="screen" id="q4bad">
+  <img class="pic" src="png.12.png" alt="">
+  <br><button onclick="go('q4retry')">إعادة محاولة</button>
+</section>
+
+<section class="screen" id="q4retry">
+  <img class="pic" src="png.10.png" alt="">
+  <h2>وش اكثر حاجة تحبها اناسيييي ؟</h2>
+  <div class="options">
+    <button onclick="playSound('voc3', 3); go('q4ok')">سيدعلي</button>
+  </div>
+</section>
+
+<!-- Page 5 -->
+<section class="screen" id="q5">
+  <img class="pic" src="png.13.png" alt="">
+  <h2>وش اكثر اكلة يحبها sidali ?</h2>
+  <div class="options">
+    <button onclick="answerQ5(true, this)">انا (اناسيييييي)</button>
+    <button onclick="answerQ5(false, this)">كبدة</button>
+    <button onclick="answerQ5(false, this)">مانجا</button>
+    <button onclick="answerQ5(false, this)">رشتة</button>
+  </div>
+</section>
+
+<section class="screen" id="q5ok">
+  <img class="pic" src="png.14.png" alt="">
+  <button onclick="go('q6')">متابعة</button>
+</section>
+
+<section class="screen" id="q5bad">
+  <img class="pic" src="png.15.png" alt="">
+  <br><button onclick="go('q5retry')">إعادة محاولة</button>
+</section>
+
+<section class="screen" id="q5retry">
+  <img class="pic" src="png.13.png" alt="">
+  <h2>وش اكثر اكلة يحبها sidali ?</h2>
+  <div class="options">
+    <button onclick="playSound('voc3', 3); go('q6')">اناسيييي</button>
+  </div>
+</section>
+
+<!-- Page 6 -->
+<section class="screen" id="q6">
+  <img class="pic" src="png.16.png" alt="">
+  <h2>تقبلي تتزوجي بيا وتكوني مرتي ؟</h2>
+  <div class="options">
+    <button onclick="finalAnswer(true)">نعم</button>
+    <button onclick="finalAnswer(false)">لا</button>
+  </div>
+</section>
+
+<section class="screen" id="q6yes">
+  <img class="pic" src="png.17.png" alt="">
+  <br><button onclick="restartGame()">إعادة لعبة</button>
+</section>
+
+<section class="screen" id="q6no">
+  <img class="pic" src="png.18.png" alt="">
+  <br><button onclick="restartGame()">إعادة لعبة</button>
+</section>
+
+<audio id="voc1" src="voc.1.mp3"></audio>
+<audio id="voc2" src="voc.2.mp3"></audio>
+<audio id="voc3" src="voc.3.mp3"></audio>
+<audio id="voc4" src="voc.4.mp3"></audio>
+
+<script>
+  // ===== Accepted answers (normalized) =====
+  const ANSWERS = {
+    q1: ["sidali", "سيدعلي", "ايزن", "ايزان", "بنا", "نا", "خرية", "سدعلي"],
+    q3: ["inas", "اناس", "ايناس", "ميسي"],
+    q4: ["انا", "اناسيي", "اناسيييي", "اناسيييييي", "ana", "inas", "اناس", "ايناس"],
+    q5: ["انا"]
+  };
+
+  function normalize(s) {
+    return s.trim().toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/[أإآ]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/ى/g, "ي");
+  }
+  function isAccepted(list, value) {
+    const v = normalize(value);
+    return list.some(a => normalize(a) === v);
+  }
+
+  // ===== Screen navigation =====
+  const BROWN_SCREENS = ["q1","q1ok","q1bad","q1mc","q2","q2yes","q2no","q2retry","q3","q3ok","q3bad","q3retry","q4","q4ok","q4bad","q4retry","q5","q5ok","q5bad","q5retry","q6","q6yes","q6no"];
+
+  function go(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    const body = document.body;
+    body.classList.remove("grey", "brown", "red");
+    if (id === "welcome") body.classList.add("grey");
+    else if (id.endsWith("bad") || id === "q2no") body.classList.add("red");
+    else body.classList.add("brown");
+
+    if (id === "q6yes") startCelebration();
+    else stopCelebration();
+
+    ["q1input", "q3input", "q4input"].forEach(i => {
+      const el = document.getElementById(i);
+      if (el) el.value = "";
+    });
+  }
+
+  function playSound(id, seconds = null, delay = 0) {
+    const a = document.getElementById(id);
+    setTimeout(() => {
+      a.currentTime = 0;
+      a.play().catch(() => {});
+      if (seconds) setTimeout(() => a.pause(), seconds * 1000);
+    }, delay);
+  }
+
+  // ===== Quiz logic =====
+  function checkQ1() {
+    const val = document.getElementById("q1input").value;
+    if (isAccepted(ANSWERS.q1, val)) { playSound("voc3", 3); go("q1ok"); }
+    else { playSound("voc4", 3); go("q1bad"); }
+  }
+  function pickMC(btn, correct) {
+    if (correct) { playSound("voc3", 3); go("q2"); }
+    else { btn.classList.add("wrong"); playSound("voc4", 3); setTimeout(() => go("q1bad"), 600); }
+  }
+  function answerQ2(yes, btn) {
+    if (yes) { playSound("voc3", 3); go("q2yes"); }
+    else { btn.classList.add("wrong"); playSound("voc4", 3); setTimeout(() => go("q2no"), 600); }
+  }
+  function checkQ3() {
+    const val = document.getElementById("q3input").value;
+    if (isAccepted(ANSWERS.q3, val)) { playSound("voc3", 3); go("q3ok"); }
+    else { playSound("voc4", 3); go("q3bad"); }
+  }
+  function checkQ4() {
+    const val = document.getElementById("q4input").value;
+    if (isAccepted(ANSWERS.q4, val)) { playSound("voc3", 3); go("q4ok"); }
+    else { playSound("voc4", 3); go("q4bad"); }
+  }
+  function answerQ5(correct, btn) {
+    if (correct) { playSound("voc3", 3); go("q5ok"); }
+    else { btn.classList.add("wrong"); playSound("voc4", 3); setTimeout(() => go("q5bad"), 600); }
+  }
+
+  // ===== Final question =====
+  function finalAnswer(yes) {
+    if (yes) {
+      go("q6yes");
+      playSound("voc1", null, 1000);
+    } else {
+      go("q6no");
+      playSound("voc2", null, 1000);
+    }
+  }
+
+  // ===== Celebration (confetti starts 4s after نعم) =====
+  let celebrateTimer = null;
+  function startCelebration() {
+    const box = document.getElementById("celebrate");
+    stopCelebration();
+    celebrateTimer = setTimeout(() => {
+      box.style.display = "block";
+      box.innerHTML = "";
+      const colors = ["#ff6b6b", "#ffd93d", "#6bcb77", "#4d96ff", "#ff9ff3", "#fff"];
+      for (let i = 0; i < 80; i++) {
+        const p = document.createElement("div");
+        p.className = "piece";
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.background = colors[i % colors.length];
+        p.style.animationDuration = (3 + Math.random() * 4) + "s";
+        p.style.animationDelay = (Math.random() * 3) + "s";
+        box.appendChild(p);
+      }
+    }, 4000);
+  }
+  function stopCelebration() {
+    clearTimeout(celebrateTimer);
+    const box = document.getElementById("celebrate");
+    box.style.display = "none";
+    box.innerHTML = "";
+  }
+
+  function restartGame() {
+    stopCelebration();
+    document.querySelectorAll("audio").forEach(a => a.pause());
+    document.querySelectorAll("button").forEach(b => b.classList.remove("wrong", "right"));
+    go("q1");
+  }
+
+  // ===== Interactive abandoned-school background =====
+  const root = document.documentElement;
+  const canvas = document.getElementById("bg-canvas");
+  const ctx = canvas.getContext("2d");
+  let W, H, mouse = { x: -1000, y: -1000 };
+  const dust = [];
+  const fog = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  for (let i = 0; i < 90; i++) {
+    dust.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.8 + 0.5,
+      vx: (Math.random() - 0.5) * 0.25, vy: -Math.random() * 0.3 - 0.05,
+      a: Math.random() * 0.6 + 0.2
+    });
+  }
+  for (let i = 0; i < 6; i++) {
+    fog.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: 200 + Math.random() * 250,
+      vx: (Math.random() - 0.5) * 0.15, phase: Math.random() * 6.28
+    });
+  }
+
+  window.addEventListener("mousemove", e => {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    root.style.setProperty("--mx", e.clientX + "px");
+    root.style.setProperty("--my", e.clientY + "px");
+    // Dust is pushed away from the cursor
+    dust.forEach(d => {
+      const dx = d.x - mouse.x, dy = d.y - mouse.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 120) {
+        d.vx += (dx / dist) * 0.25;
+        d.vy += (dy / dist) * 0.25;
+      }
+    });
+  });
+  window.addEventListener("click", e => {
+    // Click sends a burst of dust outward
+    for (let i = 0; i < 12; i++) {
+      dust.push({
+        x: e.clientX, y: e.clientY, r: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3,
+        a: 0.9
+      });
+    }
+    if (dust.length > 250) dust.splice(0, dust.length - 250);
+  });
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+
+    // Drifting fog
+    fog.forEach(f => {
+      f.x += f.vx;
+      if (f.x < -f.r) f.x = W + f.r;
+      if (f.x > W + f.r) f.x = -f.r;
+      const pulse = 0.5 + 0.5 * Math.sin(t / 2000 + f.phase);
+      const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r);
+      g.addColorStop(0, `rgba(160,150,130,${0.07 + pulse * 0.05})`);
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    });
+
+    // Floating dust / ash particles
+    dust.forEach(d => {
+      d.x += d.vx; d.y += d.vy;
+      d.vx *= 0.98; d.vy *= 0.98;
+      d.vy -= 0.002;
+      if (d.y < -10) { d.y = H + 10; d.x = Math.random() * W; }
+      if (d.x < -10) d.x = W + 10;
+      if (d.x > W + 10) d.x = -10;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(230,215,190,${d.a})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+</script>
+</body>
+</html>
